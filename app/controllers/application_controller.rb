@@ -1,3 +1,4 @@
+require 'net/http'
 class ApplicationController < ActionController::API
   before_action :authenticate_request
   attr_reader :authenticated_user
