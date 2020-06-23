@@ -17,7 +17,7 @@ class FavoritesController < ApplicationController
   def create
 
     @favorite = Favorite.new(favorite_params)
-    @favorite[:user_id] = @user["sub"]
+    @favorite[:user_id] = @authenticated_user["sub"]
 
     if @favorite.save
       render json: @favorite, status: :created, location: @favorite
