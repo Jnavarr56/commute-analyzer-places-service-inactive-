@@ -12,9 +12,7 @@ COPY Gemfile.lock /app/Gemfile.lock
 # Dependency stuff
 RUN bundle install 
 
-# Remove previous process
-RUN rm -f tmp/pids/server.pid
-
-
+# Make executable
+RUN chmod +x /app/run.sh
 
 
