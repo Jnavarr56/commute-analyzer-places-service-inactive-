@@ -98,7 +98,7 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
 
-    # In production, allow this api to be hit from only the specified origins.
+  # In production, allow this api to be hit from only the specified origins.
   config.middleware.insert_before 0, Rack::Cors do
     allow do
       origins ENV['CLIENT_ORIGIN']

@@ -3,7 +3,10 @@ class FavoritesController < ApplicationController
 
   # GET /favorites
   def index
-    @favorites = Favorite.where(:user_id => @authenticated_user["sub"])
+    cache_key = gen_cache_key_prefix
+    @favorites = Rails.cache.fetch(cache_key, expires_in: 5.minutes) do
+      Favorite.where(:user_id => @authenticated_user["sub"])
+    end
 
     render json: @favorites
   end
@@ -18,8 +21,13 @@ class FavoritesController < ApplicationController
 
     @favorite = Favorite.new(favorite_params)
     @favorite[:user_id] = @authenticated_user["sub"]
+    @favorite[:state] = "NY"
 
     if @favorite.save
+      cache_key = gen_cache_key_prefix + "/#{@favorite[:id]}"
+      Rails.cache.write(cache_key, @favorite, expires_in: 5.minutes)
+      Rails.cache.delete(gen_cache_key_prefix)
+
       render json: @favorite, status: :created, location: @favorite
     else
       render json: @favorite.errors, status: :unprocessable_entity
@@ -29,6 +37,7 @@ class FavoritesController < ApplicationController
   # PATCH/PUT /favorites/1
   def update
     if @favorite.update(favorite_params)
+      Rails.cache.delete(gen_cache_key_prefix)
       render json: @favorite
     else
       render json: @favorite.errors, status: :unprocessable_entity
@@ -37,13 +46,20 @@ class FavoritesController < ApplicationController
 
   # DELETE /favorites/1
   def destroy
+    Rails.cache.delete(gen_cache_key_prefix)
     @favorite.destroy
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_favorite
-      favorite = Favorite.find(params[:id])
+
+      cache_key = gen_cache_key_prefix + "/#{params[:id]}"
+
+      favorite = Rails.cache.fetch(cache_key, expires_in: 5.minutes) do
+        puts "anal testament"
+        Favorite.find(params[:id])
+      end
 
       if favorite[:user_id] != @authenticated_user["sub"]
         render json: "Forbidden", status: 403
@@ -55,6 +71,11 @@ class FavoritesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def favorite_params
-      params.require(:favorite).permit(:name, :category, :street_address, :zip_code, :state, :icon_color)
+      params.require(:favorite).permit(:name, :category, :street_address, :zip_code, :icon_color)
     end
+
+    # Generate a key prefix to access cached data.
+    def gen_cache_key_prefix
+      "#{@authenticated_user["sub"]}/favorites"
+    end 
 end

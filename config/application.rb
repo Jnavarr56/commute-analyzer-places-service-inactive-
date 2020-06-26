@@ -34,6 +34,14 @@ module PlacesService
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # Docker compose internal network proxy host.
     config.hosts << "places-service"
+        
+    # Always enable caching.
+    config.action_controller.perform_caching = true
+    config.cache_store = :redis_cache_store, { url: 'redis://cache:6379/0' }
+
+
+    config.mongoid.logger.level = Logger::INFO 
   end
 end

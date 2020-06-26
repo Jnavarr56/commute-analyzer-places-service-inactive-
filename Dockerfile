@@ -4,7 +4,7 @@ FROM ruby:2.7.1
 # Set up Linux
 RUN apt-get update -qq && apt-get install -y
 
-RUN mkdir /app
+# RUN mkdir /app
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
