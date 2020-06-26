@@ -57,7 +57,6 @@ class FavoritesController < ApplicationController
       cache_key = gen_cache_key_prefix + "/#{params[:id]}"
 
       favorite = Rails.cache.fetch(cache_key, expires_in: 5.minutes) do
-        puts "anal testament"
         Favorite.find(params[:id])
       end
 

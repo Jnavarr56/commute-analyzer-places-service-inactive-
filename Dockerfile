@@ -16,5 +16,8 @@ RUN bundle install --no-binstubs --jobs $(nproc) --retry 3
 
 COPY . .
 
-CMD ["bundle", "exec", "rails", "server", "-p", "80", "-b", "0.0.0.0"]
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
+RUN chmod +x /wait
+
+# CMD ["bundle", "exec", "rails", "server", "-p", "80", "-b", "0.0.0.0"]
 

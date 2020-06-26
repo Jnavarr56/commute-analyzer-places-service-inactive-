@@ -3,7 +3,6 @@ class Apartment
   include Mongoid::Timestamps
   field :user_id, type: String
   field :name, type: String
-  field :list_id, type: String
   field :street_address, type: String
   field :zip_code, type: Integer
   field :state, type: String
