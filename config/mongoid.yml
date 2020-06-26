@@ -5,7 +5,7 @@ development:
     default:
       # Mongoid can connect to a URI accepted by the driver:
       # uri: mongodb://user:password@mongodb.domain.com:27017/places_service_development
-      uri: ENV["MONGO_DB_URL"]/places_service_development?retryWrites=true&w=majority
+      uri: <%= "#{ENV["MONGO_DB_URL"]}/places_service_development?retryWrites=true&w=majority" %>
 
       # Otherwise define the parameters separately.
       # This defines the name of the default database that Mongoid can connect to.
